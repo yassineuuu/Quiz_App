@@ -3,6 +3,11 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<GridPane onKeyPressed="#pageOne" onKeyReleased="#pageOne" fx:controller="sample.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <ImageView>
+        <Image url="@img/java.gif"/>
+    </ImageView>
 </GridPane>
