@@ -1,26 +1,21 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
 
@@ -29,10 +24,10 @@ public class Main extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         //Controller ctrl = new Controller();
-        //GridPane
+        //BorderPane
         BorderPane root = new BorderPane();
         primaryStage.setTitle("JAVA Quiz");
-        primaryStage.setScene(new Scene(root, 900, 900));
+        primaryStage.setScene(new Scene(root, 900, 1000));
         primaryStage.show();
         root.setStyle("-fx-background-color:rgb(148, 156, 223)");
 
@@ -62,7 +57,7 @@ public class Main extends Application {
         //Image
         Image image = new Image(getClass().getResource("img/java.gif").toString());
         ImageView iv1 = new ImageView(image);
-        Bottom.getChildren().add(iv1);
+        Center.getChildren().add(iv1);
 
 
         //1st page Button
@@ -90,7 +85,25 @@ public class Main extends Application {
             question1.constructQuestion();
             question1.setRightAnswer("Compilé");
 
-            QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane);
+            /*Button btn2 = new Button("Next");
+            flowPane.getChildren().add(btn2);
+            btn2.setOnAction(f->{
+                question1.toScore();
+                flowPane.getChildren().clear();
+                Center.getChildren().clear();
+
+                //add a FlowPane to the center
+                Center.getChildren().add(flowPane2);
+
+                QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane2);
+                question2.constructQuestion();
+                question2.setRightAnswer("Object");
+
+                Button btn3 = new Button("Next");
+                flowPane2.getChildren().add(btn3);
+                btn3.setOnAction(g-> question1.toScore());
+            });
+            */QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane);
             question2.constructQuestion();
             question2.setRightAnswer("Object");
 
@@ -106,66 +119,145 @@ public class Main extends Application {
             question5.constructQuestion();
             question5.setRightAnswer("Interface");
 
+
             Button btn2 = new Button("Next");
             flowPane.getChildren().add(btn2);
+
+
             btn2.setOnAction(f->{
                 flowPane.getChildren().clear();
 
                 //add a FlowPane to the center
                 Center.getChildren().add(flowPane2);
+                question1.toScore();
+                question2.toScore();
+                question3.toScore();
+                question4.toScore();
+                question5.toScore();
+                question1.readAnswer();
+
+                AtomicInteger score = new AtomicInteger(question1.getScore1());
+
+                if (score.get() >=40){
+                    Center.getChildren().clear();
+
+                    //add a FlowPane to the center
+                    Center.getChildren().add(flowPane2);
+
+                    QuestionsPart2 question6 = new QuestionsPart2("Après la compilation, un programme écrit en JAVA, il se transforme en programme en bytecode Quelle est l’extension du programme en bytecode ?: : ","a) aucun des choix","b) .JAVA ","c) .Class",flowPane2);
+                    question6.constructQuestion();
+
+                    QuestionsPart2 question7 = new QuestionsPart2("Class Test{ Public Test () { System.out.println(”Bonjour”);} public Test (int i) { this(); System.out.println(”Nous sommes en ”+i+ ” !”);}; } qu’affichera l’instruction suivante? Test t1=new Test (2018);: : ","a) aucun des choix","b) Bonjour Nous sommes en 2018 !","c) Nous sommes en 2018 !",flowPane2);
+                    question7.constructQuestion();
+
+                    QuestionsPart2 question8 = new QuestionsPart2("Voici un constructeur de la classe Employee, y-at'il un problème ?\\n\" +\n" +
+                            "                        \"Public void Employe(String n){\\n\" +\n" +
+                            "                        \"Nom=n;}: ","a) faux","b) vrai","c) aucun des choix",flowPane2);
+                    question8.constructQuestion();
+
+                    QuestionsPart2 question9 = new QuestionsPart2("Pour spécifier que la variable ne pourra plus être modifiée et doit être initialisée dès sa déclaration, on la déclare comme une constante avec le mot réservé: ","a) aucun des choix","b) final","c) const",flowPane2);
+                    question9.constructQuestion();
+
+                    QuestionsPart2 question10 = new QuestionsPart2("Dans une classe, on accède à ses variables grâce au mot clé: ","a) aucun des choix","b) this","c) super",flowPane2);
+                    question10.constructQuestion();
+
+                    Button btn3 = new Button("Next");
+                    flowPane2.getChildren().add(btn3);
+
+                    btn3.setOnAction(l->{
+                                flowPane2.getChildren().clear();
+
+                                //add a FlowPane to the center
+                                Center.getChildren().add(flowPane3);
+                                question6.toScore();
+                                question7.toScore();
+                                question8.toScore();
+                                question9.toScore();
+                                question10.toScore();
+                                question6.readAnswer();
+                                score.addAndGet(question6.getScore2());
+                        if (score.get() >=100){
+                            //the 3rd step Quiz Questions
+                            QuestionsPart3 question11 = new QuestionsPart3("Niveau : 3\n" +
+                                    "calculerSalaire(int)\n" +
+                                    "calculerSalaire(int, double)\n" +
+                                    "La méthode calculerSalaire est :","a) aucun des choix","b) surchargée","c) redéfinie", flowPane3);
+                            question11.constructQuestion();
+
+                            QuestionsPart3 question12 = new QuestionsPart3("Une classe qui contient au moins une méthode abstraite doit être déclarée abstraite.","a) vrai", "b) faux", null,flowPane3);
+                            question12.constructQuestion();
+
+                            QuestionsPart3 question13 = new QuestionsPart3("Est-ce qu’une classe peut implémenter plusieurs interfaces ?","a) vrai", "b) faux", null,flowPane3);
+                            question13.constructQuestion();
+
+                            QuestionsPart3 question14 = new QuestionsPart3("La déclaration d'une méthode suivante :\n" +
+                                    "public void traitement() throws IOException précise que la méthode propage une exception contrôlée","a) vrai", "b) faux", null,flowPane3);
+                            question14.constructQuestion();
+
+                            QuestionsPart3 question15 = new QuestionsPart3("","a) aucun des choix","b) a=10\n" + "b=0\n" + "Je suis à l’intérieur de finally","c) a=10\n" + "b=0\n" + "diviser par 0!\n"+"Je suis à l’intérieur de finally", flowPane3);
+                            question15.constructQuestion();
+
+                            Button btn4 = new Button("Done");
+                            flowPane3.getChildren().add(btn4);
+                            btn4.setOnAction(p-> {
+                                //flowPane.getChildren().clear();
+
+                                //add a FlowPane to the center
+                                //Center.getChildren().add(flowPane2);
+                                question11.toScore();
+                                question12.toScore();
+                                question13.toScore();
+                                question14.toScore();
+                                question15.toScore();
+                                question11.readAnswer();
+                                score.addAndGet(question11.getScore3());
+                                if (score.get() >= 180) {
+                                    Center.getChildren().clear();
+
+                                    //add a FlowPane to the center
+                                    Center.getChildren().add(flowPane2);
+                                    flowPane2.getChildren().add(new Label("Test is Done CONGRATS!!"));
+                                } else {
+                                    Center.getChildren().clear();
+
+                                    //add a FlowPane to the center
+                                    Center.getChildren().add(flowPane2);
+                                    flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                                }
+                            });
+
+                        }else {
+
+                            flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                        }
+
+                    });
+
+
+
+                    }
+                else {
+                    Center.getChildren().clear();
+
+                    //add a FlowPane to the center
+                    Center.getChildren().add(flowPane2);
+                    flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                }
+
+
+
+
+
 
                 //the 2nd step Quiz Questions
-                QuestionsPart2 question6 = new QuestionsPart2("Après la compilation, un programme écrit en JAVA, il se transforme en programme en bytecode Quelle est l’extension du programme en bytecode ?: : ","a) aucun des choix","b) .JAVA ","c) Compilé et Interprété",flowPane2);
-                question6.constructQuestion();
 
-                QuestionsPart2 question7 = new QuestionsPart2("Class Test{ Public Test () { System.out.println(”Bonjour”);} public Test (int i) { this(); System.out.println(”Nous sommes en ”+i+ ” !”);}; } qu’affichera l’instruction suivante? Test t1=new Test (2018);: : ","a) aucun des choix","b) Bonjour Nous sommes en 2018 !","c) Nous sommes en 2018 !",flowPane2);
-                question7.constructQuestion();
+        });
 
-                QuestionsPart2 question8 = new QuestionsPart2("Voici un constructeur de la classe Employee, y-at'il un problème ?\\n\" +\n" +
-                        "                        \"Public void Employe(String n){\\n\" +\n" +
-                        "                        \"Nom=n;}: ","a) faux","b) vrai","c) aucun des choix",flowPane2);
-                question8.constructQuestion();
 
-                QuestionsPart2 question9 = new QuestionsPart2("Pour spécifier que la variable ne pourra plus être modifiée et doit être initialisée dès sa déclaration, on la déclare comme une constante avec le mot réservé: ","a) aucun des choix","b) final","c) const",flowPane2);
-                question9.constructQuestion();
 
-                QuestionsPart2 question10 = new QuestionsPart2("Dans une classe, on accède à ses variables grâce au mot clé: ","a) aucun des choix","b) this","c) super",flowPane2);
-                question10.constructQuestion();
-
-                Button btn3 = new Button("Next");
-                flowPane2.getChildren().add(btn3);
-                btn3.setOnAction(g->{
-                    flowPane2.getChildren().clear();
-                    //add a FlowPane to the center
-                    Center.getChildren().add(flowPane3);
-
-                    //the 3rd step Quiz Questions
-                    QuestionsPart3 question11 = new QuestionsPart3("Niveau : 3\n" +
-                            "calculerSalaire(int)\n" +
-                            "calculerSalaire(int, double)\n" +
-                            "La méthode calculerSalaire est :","a) aucun des choix","b) this","c) redéfinie", flowPane3);
-                    question11.constructQuestion();
-
-                    QuestionsPart3 question12 = new QuestionsPart3("Une classe qui contient au moins une méthode abstraite doit être déclarée abstraite.","a) vrai", "b) faux", null,flowPane3);
-                    question12.constructQuestion();
-
-                    QuestionsPart3 question13 = new QuestionsPart3("Est-ce qu’une classe peut implémenter plusieurs interfaces ?","a) vrai", "b) faux", null,flowPane3);
-                    question13.constructQuestion();
-
-                    QuestionsPart3 question14 = new QuestionsPart3("La déclaration d'une méthode suivante :\n" +
-                            "public void traitement() throws IOException précise que la méthode propage une exception contrôlée","a) vrai", "b) faux", null,flowPane3);
-                    question14.constructQuestion();
-
-                    QuestionsPart3 question15 = new QuestionsPart3("","a) aucun des choix","a=10\n" + "b=0\n" + "Je suis à l’intérieur de finally","a=10\n" + "b=0\n" + "diviser par 0!\n"+"Je suis à l’intérieur de finally", flowPane3);
-                    question15.constructQuestion();
-
-                    Button btn4 = new Button("Done");
-                    flowPane3.getChildren().add(btn4);
 
                 });
 
-            });
-        });
     }
 
 
