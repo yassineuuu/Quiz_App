@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -8,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,12 +177,17 @@ public class QuestionsPart1{
 
         //fill the FlowPane
         flowPane.getChildren().add(label);
+        label.setFont(new Font("Courier New bold",15));
         flowPane.getChildren().add(new Label());
         flowPane.getChildren().add(check1);
         flowPane.getChildren().add(check2);
         flowPane.getChildren().add(check3);
         flowPane.getChildren().add(new Label());
         flowPane.getChildren().add(new Label());
+        check1.setPadding(new Insets(0,0,0,20));
+        check2.setPadding(new Insets(0,0,0,20));
+        check3.setPadding(new Insets(0,0,0,20));
+
     }
 
 

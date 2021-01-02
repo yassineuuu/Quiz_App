@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -11,13 +12,26 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
+    Timer timer = new Timer();
+    HBox timeBox = new HBox();
+    TimerTask task;
+
+    int secondPassed = 300;
+    Label timeLabel = new Label();
+
+    public void start(){
+        timer.scheduleAtFixedRate(task,0,1000);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -27,7 +41,7 @@ public class Main extends Application {
         //BorderPane
         BorderPane root = new BorderPane();
         primaryStage.setTitle("JAVA Quiz");
-        primaryStage.setScene(new Scene(root, 900, 1000));
+        primaryStage.setScene(new Scene(root, 1200, 900));
         primaryStage.show();
         root.setStyle("-fx-background-color:rgb(148, 156, 223)");
 
@@ -35,10 +49,10 @@ public class Main extends Application {
         HBox Top = new HBox();
         Top.setAlignment(Pos.CENTER);
         root.setTop(Top);
-        Top.setPadding(new Insets(20, 5, 10, 5));
+        Top.setPadding(new Insets(20, 5, 10, 0));
 
         //Center Border
-        HBox Center = new HBox();
+        GridPane Center = new GridPane();
         Center.setAlignment(Pos.CENTER);
         root.setCenter(Center);
 
@@ -51,59 +65,88 @@ public class Main extends Application {
 
         //1st page label
         Label greeting =new Label("Ready to take the Java Quiz ?");
-        Top.getChildren().add(greeting);
-        greeting.setFont(new Font("Tahoma ",19));
+
+        Center.add(greeting,0,0);
+        greeting.setFont(new Font("Courier New bold",19));
+        greeting.setPadding(new Insets(0,0,20,50));
 
         //Image
         Image image = new Image(getClass().getResource("img/java.gif").toString());
         ImageView iv1 = new ImageView(image);
-        Center.getChildren().add(iv1);
+        Center.add(iv1, 0,1);
 
 
-        //1st page Button
+
+        HBox center2 = new HBox();
+        center2.setAlignment(Pos.CENTER);
+        center2.setPadding(new Insets(50, 0, 0, 0));
+
+//1st page Button
         Button btn1 = new Button("Start The Quiz");
-        Center.getChildren().add(btn1);
+        Center.add(center2,0,2);
+        center2.getChildren().add(btn1);
+        center2.setPadding(new Insets(0,0,0,40));
+
+//Timer
+        Bottom.getChildren().add(timeBox);
+        timeBox.getChildren().add(timeLabel);
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(()->{
+                    secondPassed--;
+                    timeLabel.setText(secondPassed + " Seconds is left");
+                    if (secondPassed == 0){
+                        Center.getChildren().clear();
+
+                        //add a FlowPane to the center
+                        Center.getChildren().add(new Label("YOU RUN OUT OF TIME"));
+                        timer.cancel();
+                        timer.purge();
+                    }
+                });
+
+            }
+        };
+
+
+
+
 
         //to the Quiz
         btn1.setOnAction(e->{
+
             FlowPane flowPane= new FlowPane(Orientation.VERTICAL);
             flowPane.setAlignment(Pos.CENTER);
+            flowPane.setHgap(50);
+            flowPane.setPadding(new Insets(0,0,0,20));
             FlowPane flowPane2= new FlowPane(Orientation.VERTICAL);
             flowPane2.setAlignment(Pos.CENTER);
+            flowPane2.setHgap(50);
+            flowPane2.setPadding(new Insets(0,0,0,20));
             FlowPane flowPane3= new FlowPane(Orientation.VERTICAL);
             flowPane3.setAlignment(Pos.CENTER);
+            flowPane3.setHgap(50);
+            flowPane3.setPadding(new Insets(0,0,0,20));
 
             //empty the Pane
             Top.getChildren().clear();
             Center.getChildren().clear();
+            center2.getChildren().clear();
 
             //add a FlowPane to the center
             Center.getChildren().add(flowPane);
+            start();
+
+
+
 
             //the 1st step Quiz Questions
             QuestionsPart1 question1 = new QuestionsPart1("JAVA est un langage: ","Compilé","Interprété","Compilé et Interprété",flowPane);
             question1.constructQuestion();
             question1.setRightAnswer("Compilé");
 
-            /*Button btn2 = new Button("Next");
-            flowPane.getChildren().add(btn2);
-            btn2.setOnAction(f->{
-                question1.toScore();
-                flowPane.getChildren().clear();
-                Center.getChildren().clear();
-
-                //add a FlowPane to the center
-                Center.getChildren().add(flowPane2);
-
-                QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane2);
-                question2.constructQuestion();
-                question2.setRightAnswer("Object");
-
-                Button btn3 = new Button("Next");
-                flowPane2.getChildren().add(btn3);
-                btn3.setOnAction(g-> question1.toScore());
-            });
-            */QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane);
+         QuestionsPart1 question2 = new QuestionsPart1("Toutes les classes héritent de la classe: ","Main","Object","AWT",flowPane);
             question2.constructQuestion();
             question2.setRightAnswer("Object");
 
@@ -111,7 +154,7 @@ public class Main extends Application {
             question3.constructQuestion();
             question3.setRightAnswer("commence par une majuscule");
 
-            QuestionsPart1 question4 = new QuestionsPart1("Est-ce que on peut avoir plusieurs constructeurs pour la même classe: ","Oui","Non",null,flowPane);
+            QuestionsPart1 question4 = new QuestionsPart1("Est-ce que on peut avoir plusieurs constructeurs\npour la même classe: ","Oui","Non",null,flowPane);
             question4.constructQuestion();
             question4.setRightAnswer("Oui");
 
@@ -120,8 +163,10 @@ public class Main extends Application {
             question5.setRightAnswer("Interface");
 
 
+
+            Center.add(center2,0,1);
             Button btn2 = new Button("Next");
-            flowPane.getChildren().add(btn2);
+            center2.getChildren().add(btn2);
 
 
             btn2.setOnAction(f->{
@@ -140,32 +185,33 @@ public class Main extends Application {
 
                 if (score.get() >=40){
                     Center.getChildren().clear();
+                    center2.getChildren().clear();
 
                     //add a FlowPane to the center
                     Center.getChildren().add(flowPane2);
 
-                    QuestionsPart2 question6 = new QuestionsPart2("Après la compilation, un programme écrit en JAVA, il se transforme en programme en bytecode Quelle est l’extension du programme en bytecode ?: : ","a) aucun des choix","b) .JAVA ","c) .Class",flowPane2);
+                    QuestionsPart2 question6 = new QuestionsPart2("Après la compilation, un programme écrit en JAVA,\nil se transforme en programme en bytecode.\nQuelle est l’extension du programme en bytecode ?:","a) aucun des choix","b) .JAVA ","c) .Class",flowPane2);
                     question6.constructQuestion();
 
-                    QuestionsPart2 question7 = new QuestionsPart2("Class Test{ Public Test () { System.out.println(”Bonjour”);} public Test (int i) { this(); System.out.println(”Nous sommes en ”+i+ ” !”);}; } qu’affichera l’instruction suivante? Test t1=new Test (2018);: : ","a) aucun des choix","b) Bonjour Nous sommes en 2018 !","c) Nous sommes en 2018 !",flowPane2);
+                    QuestionsPart2 question7 = new QuestionsPart2("Class Test{\nPublic Test () { System.out.println(”Bonjour”);}\npublic Test (int i) {\nthis();\nSystem.out.println(”Nous sommes en ”+i+ ” !”);}; }\nqu’affichera l’instruction suivante?\nTest t1=new Test (2018);: : ","a) aucun des choix","b) Bonjour Nous sommes en 2018 !","c) Nous sommes en 2018 !",flowPane2);
                     question7.constructQuestion();
 
-                    QuestionsPart2 question8 = new QuestionsPart2("Voici un constructeur de la classe Employee, y-at'il un problème ?\\n\" +\n" +
-                            "                        \"Public void Employe(String n){\\n\" +\n" +
-                            "                        \"Nom=n;}: ","a) faux","b) vrai","c) aucun des choix",flowPane2);
+                    QuestionsPart2 question8 = new QuestionsPart2("Voici un constructeur de la classe Employee,\n y-at'il un problème ?\nPublic void Employe(String n){Nom=n;}: ","a) faux","b) vrai","c) aucun des choix",flowPane2);
                     question8.constructQuestion();
 
-                    QuestionsPart2 question9 = new QuestionsPart2("Pour spécifier que la variable ne pourra plus être modifiée et doit être initialisée dès sa déclaration, on la déclare comme une constante avec le mot réservé: ","a) aucun des choix","b) final","c) const",flowPane2);
+                    QuestionsPart2 question9 = new QuestionsPart2("Pour spécifier que la variable ne pourra plus être modifiée\net doit être initialisée dès sa déclaration,\non la déclare comme une constante avec le mot réservé: ","a) aucun des choix","b) final","c) const",flowPane2);
                     question9.constructQuestion();
 
-                    QuestionsPart2 question10 = new QuestionsPart2("Dans une classe, on accède à ses variables grâce au mot clé: ","a) aucun des choix","b) this","c) super",flowPane2);
+                    QuestionsPart2 question10 = new QuestionsPart2("Dans une classe, on accède à ses variables\ngrâce au mot clé: ","a) aucun des choix","b) this","c) super",flowPane2);
                     question10.constructQuestion();
 
-                    Button btn3 = new Button("Next");
-                    flowPane2.getChildren().add(btn3);
 
+                    Center.add(center2,0,1);
+                    Button btn3 = new Button("Next");
+                    center2.getChildren().add(btn3);
                     btn3.setOnAction(l->{
                                 flowPane2.getChildren().clear();
+                                center2.getChildren().clear();
 
                                 //add a FlowPane to the center
                                 Center.getChildren().add(flowPane3);
@@ -178,8 +224,7 @@ public class Main extends Application {
                                 score.addAndGet(question6.getScore2());
                         if (score.get() >=100){
                             //the 3rd step Quiz Questions
-                            QuestionsPart3 question11 = new QuestionsPart3("Niveau : 3\n" +
-                                    "calculerSalaire(int)\n" +
+                            QuestionsPart3 question11 = new QuestionsPart3("Niveau : 3\ncalculerSalaire(int)\n" +
                                     "calculerSalaire(int, double)\n" +
                                     "La méthode calculerSalaire est :","a) aucun des choix","b) surchargée","c) redéfinie", flowPane3);
                             question11.constructQuestion();
@@ -198,7 +243,7 @@ public class Main extends Application {
                             question15.constructQuestion();
 
                             Button btn4 = new Button("Done");
-                            flowPane3.getChildren().add(btn4);
+                            center2.getChildren().add(btn4);
                             btn4.setOnAction(p-> {
                                 //flowPane.getChildren().clear();
 
