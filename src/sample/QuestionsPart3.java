@@ -3,12 +3,12 @@ package sample;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
@@ -217,6 +217,8 @@ public class QuestionsPart3{
 
 
     public void readAnswer(){
+        try {
+
         if (list3.get(0).equals("b) surchargée")){
             score3+=20;
             System.out.println(score3);
@@ -247,7 +249,25 @@ public class QuestionsPart3{
         }else {
             System.out.println(score3);
         }
-
+    }catch (Exception e) {
+        VBox root = new VBox();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Missing answers");
+        primaryStage.setScene(new Scene(root, 400, 100));
+        primaryStage.show();
+        primaryStage.onCloseRequestProperty();
+        root.setStyle("-fx-background-color:rgb(148, 156, 223)");
+        root.setAlignment(Pos.CENTER);
+        //1st page label
+        Label label = new Label("There is some empty answers please answer all the questions.");
+        root.getChildren().add(label);
+        //Button
+        Button btn1 = new Button("OK");
+        root.getChildren().add(btn1);
+        btn1.setOnAction(r -> {
+            primaryStage.close();
+        });
+    }
     }
 
 

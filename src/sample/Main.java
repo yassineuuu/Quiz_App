@@ -10,10 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -41,8 +38,9 @@ public class Main extends Application {
         //BorderPane
         BorderPane root = new BorderPane();
         primaryStage.setTitle("JAVA Quiz");
-        primaryStage.setScene(new Scene(root, 1200, 900));
+        primaryStage.setScene(new Scene(root, 1800, 900));
         primaryStage.show();
+        primaryStage.onCloseRequestProperty();
         root.setStyle("-fx-background-color:rgb(148, 156, 223)");
 
         //Top Border
@@ -96,6 +94,8 @@ public class Main extends Application {
                 Platform.runLater(()->{
                     secondPassed--;
                     timeLabel.setText(secondPassed + " Seconds is left");
+                    timeLabel.setPadding(new Insets(0,0,20,0));
+                    timeLabel.setFont(new Font("New Times bold",20));
                     if (secondPassed == 0){
                         Center.getChildren().clear();
 
@@ -222,9 +222,9 @@ public class Main extends Application {
                                 question10.toScore();
                                 question6.readAnswer();
                                 score.addAndGet(question6.getScore2());
-                        if (score.get() >=100){
+                        if (score.get() >= 100){
                             //the 3rd step Quiz Questions
-                            QuestionsPart3 question11 = new QuestionsPart3("Niveau : 3\ncalculerSalaire(int)\n" +
+                            QuestionsPart3 question11 = new QuestionsPart3("calculerSalaire(int)\n" +
                                     "calculerSalaire(int, double)\n" +
                                     "La méthode calculerSalaire est :","a) aucun des choix","b) surchargée","c) redéfinie", flowPane3);
                             question11.constructQuestion();
@@ -232,14 +232,26 @@ public class Main extends Application {
                             QuestionsPart3 question12 = new QuestionsPart3("Une classe qui contient au moins une méthode abstraite doit être déclarée abstraite.","a) vrai", "b) faux", null,flowPane3);
                             question12.constructQuestion();
 
-                            QuestionsPart3 question13 = new QuestionsPart3("Est-ce qu’une classe peut implémenter plusieurs interfaces ?","a) vrai", "b) faux", null,flowPane3);
+                            QuestionsPart3 question13 = new QuestionsPart3("Est-ce qu’une classe peut implémenter plusieurs interfaces ?","a) vrai", "b) faux", "c) aucun des choix",flowPane3);
                             question13.constructQuestion();
 
                             QuestionsPart3 question14 = new QuestionsPart3("La déclaration d'une méthode suivante :\n" +
-                                    "public void traitement() throws IOException précise que la méthode propage une exception contrôlée","a) vrai", "b) faux", null,flowPane3);
+                                    "public void traitement() throws IOException précise\nque la méthode propage une exception contrôlée","a) vrai", "b) faux", "c) aucun des choix",flowPane3);
                             question14.constructQuestion();
 
-                            QuestionsPart3 question15 = new QuestionsPart3("","a) aucun des choix","b) a=10\n" + "b=0\n" + "Je suis à l’intérieur de finally","c) a=10\n" + "b=0\n" + "diviser par 0!\n"+"Je suis à l’intérieur de finally", flowPane3);
+                            QuestionsPart3 question15 = new QuestionsPart3("class Test{\n" +
+                                    "public static void main (String[] args) {\n" +
+                                    "try {\n" +
+                                    "int a =10;\n" +
+                                    "System.out.println (\"a = \" + a );\n" +
+                                    "int b = 0 / a;\n" +
+                                    "System.out.println (\"b = \" + b);\n" +
+                                    "}\n" +
+                                    "catch(ArithmeticException e)\n" +
+                                    "{System.out.println (\"diviser par 0!\"); }\n" +
+                                    "finally\n" +
+                                    "{System.out.println (\"je suis à l’intérieur de\n" +
+                                    "finally\");}}}\n","a) aucun des choix","b) a=10\n" + "b=0\n" + "Je suis à l’intérieur de finally","c) a=10\n" + "b=0\n" + "diviser par 0!\n"+"Je suis à l’intérieur de finally", flowPane3);
                             question15.constructQuestion();
 
                             Button btn4 = new Button("Done");
@@ -256,24 +268,30 @@ public class Main extends Application {
                                 question15.toScore();
                                 question11.readAnswer();
                                 score.addAndGet(question11.getScore3());
-                                if (score.get() >= 180) {
+                                if (score.get() >= 180 && question15.getScore3()>=80) {
                                     Center.getChildren().clear();
 
                                     //add a FlowPane to the center
                                     Center.getChildren().add(flowPane2);
                                     flowPane2.getChildren().add(new Label("Test is Done CONGRATS!!"));
+                                    timer.cancel();
+                                    timer.purge();
                                 } else {
                                     Center.getChildren().clear();
 
                                     //add a FlowPane to the center
                                     Center.getChildren().add(flowPane2);
                                     flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                                    timer.cancel();
+                                    timer.purge();
                                 }
                             });
 
                         }else {
 
                             flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                            timer.cancel();
+                            timer.purge();
                         }
 
                     });
@@ -282,11 +300,15 @@ public class Main extends Application {
 
                     }
                 else {
-                    Center.getChildren().clear();
 
-                    //add a FlowPane to the center
-                    Center.getChildren().add(flowPane2);
-                    flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                        Center.getChildren().clear();
+
+                        //add a FlowPane to the center
+                        Center.getChildren().add(flowPane2);
+                        flowPane2.getChildren().add(new Label("Test is Done you failed!!"));
+                    timer.cancel();
+                    timer.purge();
+
                 }
 
 
